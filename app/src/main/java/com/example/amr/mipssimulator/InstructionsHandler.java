@@ -2,31 +2,29 @@ package com.example.amr.mipssimulator;
 
 
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class InstructionsHandler {
-    private final MainActivity mainActivity;
-    public String MipsCode;
+ class InstructionsHandler {
+    final MainActivity mainActivity;
+     String MipsCode;
     private String[] Instructions =new String[]{"add","and","or","nor","slt","sll","jr","beq","addi","andi","ori","lw","sw","j","jal"};
     private static final int LastRFormatInInstArray =6;
     private static final int LastIFormatInInstArray =12;
     private static final int LastJFormatInInstArray =14;
     private int InstFormat=0;
-    int SearchCursorPos=0;
-    public static final int R_FORMAT =10;
-    public static final int I_FORMAT =20;
-    public static final int J_FORMAT =30;
-    boolean InstructionNameISObtained=false;
-    RegisterAndMemoryHandler registers;
+     private static final int R_FORMAT =10;
+    private static final int I_FORMAT =20;
+    private static final int J_FORMAT =30;
+    private boolean InstructionNameISObtained=false;
+    private Register_Memory_CycleData_Handler registers;
     ArrayList<HashMap<String,String>> DataAndInstMemory =new ArrayList<>();
+     ArrayList<HashMap<String,Integer>> InstNamesPos =new ArrayList<>();
     private String ObtainedInst;
     private int LineCounter=0;
+     int ObtainedRegisterAdrdress =0;
 
-    public InstructionsHandler( RegisterAndMemoryHandler registers,MainActivity mainActivity) {
+     InstructionsHandler(Register_Memory_CycleData_Handler registers, MainActivity mainActivity) {
         this.mainActivity=mainActivity;
         this.registers=registers;
     }
@@ -36,28 +34,32 @@ public class InstructionsHandler {
     //we na2s n3ml ba2y el inst we handler to excute the inst one  by one
 
     //this obatines the inst from user code  #param c >. the starting Char pos to begin  with
-    public void obtainInstFromCode(int c) {
+     void obtainInstFromCode(int c) {
         //freeThe memory
         DataAndInstMemory.clear();
+         InstNamesPos.clear();
         LineCounter=0;
         HashMap<String, String> ObtainedInstr = new HashMap<>();
         String ObtainedCode ;
         for (int i = c; i < MipsCode.length(); i++) {//add $s1,$s2,$s3 //
             if (checkIsItaName(MipsCode.substring(i, MipsCode.indexOf('\n', i)))) {
-                i = i+MipsCode.indexOf('\n', i);
+                HashMap<String, Integer> NamePosForBranch = new HashMap<>();
                 ObtainedCode = MipsCode.substring(i, MipsCode.indexOf('\n', i));
+                NamePosForBranch.put("startPos", i);
+                i = i+ObtainedCode.length();
                 ObtainedInstr.put("name", ObtainedCode);
-
+                NamePosForBranch.put(ObtainedCode, DataAndInstMemory.size());
+InstNamesPos.add(NamePosForBranch);
             } else {
-                if (isValidMiPsCodeObtained(MipsCode.substring(i, MipsCode.indexOf(' ', i)))) {
+                if (isValidMiPsCodeObtained(MipsCode.substring(i, MipsCode.indexOf(' ', i)), ObtainedInstr)) {
                     ObtainedCode = MipsCode.substring(i, MipsCode.indexOf(' ', i));
                     i = MipsCode.indexOf(' ', i)+1;
                     ObtainedInstr.put("inst", ObtainedCode);
                     InstructionNameISObtained = true;
                     String ExpectedCodePattern = MipsCode.substring(i , MipsCode.indexOf("\n", i ));
                     int positions[] = getInstContentsP0sFromExpectedCodePattern(ExpectedCodePattern,ObtainedInstr);
-                    obtainIformatInstContents(positions, ObtainedInstr, ExpectedCodePattern);
-                    i = i+ExpectedCodePattern.length()+1;
+                    obtainInstContents(positions, ObtainedInstr, ExpectedCodePattern);
+                    i = i+ExpectedCodePattern.length();
                     DataAndInstMemory.add(ObtainedInstr);
                     InstructionNameISObtained = false;
                     ObtainedInstr = new HashMap<>();
@@ -85,10 +87,20 @@ LineCounter++;
         int From1=0,to1=0,From2=0,to2=0,From3=0,to3=0;
         switch(InstFormat){
             case R_FORMAT:{
-                From1=0;to1=expectedCodePattern.indexOf(',',From1);
-                From2=to1+1;to2=expectedCodePattern.indexOf(',',From2);
-                From3=to2+1;to3=expectedCodePattern.length();
-                obtainedInst.put("format","R");
+                if(obtainedInst.get("inst").equals("jr")){
+                    From1=0;to1=expectedCodePattern.length();
+                    to2=to1;to3=to1;
+                    obtainedInst.put("format","R");
+                }
+                else {
+                    From1 = 0;
+                    to1 = expectedCodePattern.indexOf(',', From1);
+                    From2 = to1 + 1;
+                    to2 = expectedCodePattern.indexOf(',', From2);
+                    From3 = to2 + 1;
+                    to3 = expectedCodePattern.length();
+                    obtainedInst.put("format", "R");
+                }
                 break;
             }
             case I_FORMAT: { //sw $s1,8($s2);  //addi $s1,$s2,8
@@ -124,27 +136,28 @@ LineCounter++;
 
 
 //this function gets the sw and lw instructions contents from the first char $ to the last char )
-    private void obtainIformatInstContents(int positions[], HashMap<String, String> ObtainedInstr,String ExpectedCode) {
+    private void obtainInstContents(int positions[], HashMap<String, String> ObtainedInstr, String ExpectedCode) {
         boolean isValidMipsCode =false;
-            int counter = 0;
             String ObtainedCode = "";
             for (int i = 0; i <=2; i++) {
                 switch (i) {
                     case 0: {
                         ObtainedCode = ExpectedCode.substring(positions[0], positions[3]);
-                        isValidMipsCode = isValidMiPsCodeObtained(ObtainedCode);break;
+                        isValidMipsCode = isValidMiPsCodeObtained(ObtainedCode, ObtainedInstr);break;
                     }
                     case 1: {
                         ObtainedCode = ExpectedCode.substring(positions[1], positions[4]);
-                        isValidMipsCode = isValidMiPsCodeObtained(ObtainedCode);break;
+                        isValidMipsCode = isValidMiPsCodeObtained(ObtainedCode,ObtainedInstr);break;
                     }
                     case 2: {
                         ObtainedCode = ExpectedCode.substring(positions[2], positions[5]);
-                        isValidMipsCode = isValidMiPsCodeObtained(ObtainedCode);break;
+                        isValidMipsCode = isValidMiPsCodeObtained(ObtainedCode, ObtainedInstr);break;
                     }
                 }
                 if (isValidMipsCode) {
                     ObtainedInstr.put("R" + i, ObtainedCode);
+                   ObtainedInstr.put("R" + i+"Address",ObtainedInstr.get("RegAddress"));
+                    ObtainedInstr.remove("RegAddress");
                     ObtainedCode = "";
 
                 }
@@ -163,7 +176,7 @@ LineCounter++;
     private boolean isAnImmediateValue(String obtainedCode) {
 
         try {
-            int i = Integer.parseInt(obtainedCode + 1);
+            Integer.parseInt(obtainedCode + 1);
 
             return true;
 
@@ -173,38 +186,7 @@ LineCounter++;
         }
     }
 
-    private void obtainInstRegisters(int i0, int i1, HashMap<String, String> ObtainedInstr) {
-        try {
-            int counter = 0;
-            String ObtainedCode = "";
-            char Char = ' ';
-            for (int i = i0; i <= i1; i++) {
-                if (!isValidMiPsCodeObtained(ObtainedCode)) {
-                    Char = MipsCode.charAt(i);
-                    ObtainedCode = ObtainedCode + String.valueOf(Char);
-                    if (ObtainedCode.length() == 4) {
-                        sendErrorToUser(ObtainedCode);
-                        break;
-                    }
-                } else {
-                    counter++;//to know the sequence of the obtained register R1,R2,... and so on
-                    ObtainedInstr.put("R" + counter, ObtainedCode);
-                    ObtainedCode = "";
-                    if (i >= i1) {
-                        DataAndInstMemory.add(ObtainedInstr);
-
-                    }
-                }
-
-            }
-        }catch (Exception e){
-            e.getMessage();
-        }
-
-
-    }
-
-    //this sends Shows error to user due to wrong syntax or InvalidInst
+     //this sends Shows error to user due to wrong syntax or InvalidInst
 
     private void sendErrorToUser(String ErrorCode) {
         TextView ErrorView = (TextView) mainActivity.findViewById(R.id.messageView);
@@ -213,7 +195,7 @@ LineCounter++;
     }
 
     //responsible for checking the obtained string is it a valid or not
-    private boolean isValidMiPsCodeObtained(String MipsCode) {
+    private boolean isValidMiPsCodeObtained(String MipsCode, HashMap<String, String> obtainedInstr) {
         boolean CodeObtained = false;
         for (int i = 0; i <= 26; i++) {
             if (!InstructionNameISObtained) {
@@ -228,6 +210,7 @@ LineCounter++;
             } else {
                 if (MipsCode.equals(registers.RegistersCode[i])) {
                     CodeObtained = true;
+                    obtainedInstr.put("RegAddress", String.valueOf(i));
                     break;
 
                 }

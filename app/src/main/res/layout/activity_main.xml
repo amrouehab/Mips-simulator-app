@@ -1,25 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentBottom="true"
+    >
+<RelativeLayout
     android:id="@+id/h"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@+id/v">
-
-        <EditText
-            android:id="@+id/editText2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/rect_shape"
-            android:ems="10"
-            android:inputType="textMultiLine" />
-    </ScrollView>
 
     <FrameLayout
         android:id="@+id/container"
@@ -63,22 +54,17 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:onClick="Stop"
                 app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
 
             <ImageButton
                 android:id="@+id/imageButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="1.5"
                 android:onClick="Run"
                 app:srcCompat="@android:drawable/ic_media_play" />
 
-            <ImageButton
-                android:id="@+id/imageButton2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                app:srcCompat="@android:drawable/ic_media_ff" />
         </LinearLayout>
 
         <LinearLayout
@@ -92,6 +78,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:onClick="showDataCycleLayout"
                 android:text="Cycle Data" />
 
             <Button
@@ -111,5 +98,22 @@
                 android:text="register table" />
         </LinearLayout>
 
+
+        <EditText
+            android:id="@+id/editText2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rect_shape"
+            android:ems="10" />
+
+        <TextView
+            android:id="@+id/notes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textSize="16sp" />
+
     </LinearLayout>
+
 </RelativeLayout>
+</ScrollView>
