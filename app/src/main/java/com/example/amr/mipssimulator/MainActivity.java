@@ -25,8 +25,9 @@ public class MainActivity extends AppCompatActivity {
     private Fragment CurrentFragment;
      int ProgramCounter =0;
     int pos1=0,pos2=0;
-    private boolean ExcutionIsInProgress=false;
-    private boolean BuildIsDone=false;
+     boolean ExcutionIsInProgress=false;
+     boolean BuildIsDone=false;
+     TextView MessageView;
 
 
     @Override
@@ -34,16 +35,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         MipsCodeText=(EditText)findViewById(R.id.editText2);
+        MessageView=(TextView) findViewById(R.id.messageView);
         registerMemoryCycleDataHandler =new Register_Memory_CycleData_Handler(this);
         instructionsHandler=new InstructionsHandler(registerMemoryCycleDataHandler,this);
         container=(FrameLayout)findViewById(R.id.container);
         initialiseLayoutFragments();
-        instructionExcutor=new InstructionExcutor(registerMemoryCycleDataHandler,instructionsHandler);
+        instructionExcutor=new InstructionExcutor(instructionsHandler);
         TextView notes=(TextView)findViewById(R.id.notes);
         notes.setText("ImportantNotes\n*the code is case sensitive\n*every instruction should be written line by line without any spaces \n" +
                 "*the pointer of any instruction that used for jumping should be at a seperate line before its  instruction\n" +
                 "*you could adjust the Register values from register Table the same as for MemoryValues\n" +
-                "* the PC is zero By Default");
+                "* the PC is zero By Default\n* register $ra is initially set to -1 which is the address of the system caller\nwhich means that execution will be finished when ra is -1 when using Jal");
 
 
     }
@@ -95,42 +97,77 @@ public class MainActivity extends AppCompatActivity {
     public void Build(View v){
         try {
             if(ExcutionIsInProgress){
-                TextView ErrorView = (TextView) findViewById(R.id.messageView);
-                ErrorView.setText("please click stop before starting another build");
+               showMessage("please click stop before starting another build");
             }
             else {
                 instructionsHandler.MipsCode = MipsCodeText.getText().toString();
-                instructionsHandler.obtainInstFromCode(0);
-                registerMemoryCycleDataHandler.addInstToMemory(instructionsHandler);
-                BuildIsDone=true;
+                if(instructionsHandler.obtainInstFromCode(0)) {
+                    showMessage("Done\nyou can run now");
+                    registerMemoryCycleDataHandler.addInstToMemory(instructionsHandler);
+                    BuildIsDone = true;
+                }
+
             }
         }catch (Exception e){
-            TextView ErrorView = (TextView) findViewById(R.id.messageView);
-            ErrorView.setText("Error");
-            Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show();
+            MessageView = (TextView) findViewById(R.id.messageView);
+           showMessage("Error");
         }
 
     }
+    public void Excode(View v){
+        if(!ExcutionIsInProgress){
+            MessageView.setText("this is a fibonacci sequence code Example \n please set the required value of $t0 which is F0\n and $t1 which is F1\n and $a0 which is N");
+            MipsCodeText.setText("fib:\n" +
+                    "addi $t0,$0,0\n" +
+                    "addi $t1,$0,1\n" +
+                    "beq $a0,$t0,l1\n" +
+                    "beq $a0,$t1,l2\n" +
+                    "addi $sp,$sp,-12\n" +
+                    "sw $ra,8($sp)\n" +
+                    "sw $a0,4($sp)\n" +
+                    "sw $s0,0($sp)\n" +
+                    "addi $a0,$a0,-1\n" +
+                    "jal fib\n" +
+                    "addi $s0,$v0,0\n" +
+                    "addi $a0,$a0,-1\n" +
+                    "jal fib\n" +
+                    "add $v0,$v0,$s0\n" +
+                    "lw $s0,0($sp)\n" +
+                    "lw $a0,4($sp)\n" +
+                    "lw $ra,8($sp)\n" +
+                    "addi $sp,$sp,12\n" +
+                    "jr $ra\n" +
+                    "l1:\n" +
+                    "addi $v0,$0,0\n" +
+                    "jr $ra\n" +
+                    "l2:\n" +
+                    "addi $v0,$0,1\n" +
+                    "jr $ra\n");}
+        else showMessage("Execution is in progress stop it first");
+
+
+
+    }
     public void Run(View v){
-        TextView ErrorView = (TextView) findViewById(R.id.messageView);
-        ExcutionIsInProgress = ProgramCounter <= instructionsHandler.DataAndInstMemory.size() - 1;
-        if(BuildIsDone) {
-            if (ExcutionIsInProgress) {
-                highliteCurrntInstruction();
-                instructionExcutor.Excute(instructionsHandler.DataAndInstMemory.get(ProgramCounter), ProgramCounter);
-                ErrorView.setText("Excution is in progress");
+        try {
+            ExcutionIsInProgress = ProgramCounter <= instructionsHandler.DataAndInstMemory.size() - 1;
+            if (BuildIsDone) {
+                if (ExcutionIsInProgress) {
+                    highliteCurrntInstruction();
+                    instructionExcutor.Excute(instructionsHandler.DataAndInstMemory.get(ProgramCounter));
+                    MessageView.setText("Execution is in progress\nPress the Run button to execute the next Instruction");
 
+                } else {
+                    showMessage("Execution is finished");
+                    Stop(null);
+                }
             } else {
+                showMessage("Please Build Before Run");
 
-                ErrorView.setText("Excution is finished");
-                Toast.makeText(this, "Done!", Toast.LENGTH_SHORT).show();
-                Stop(null);
             }
-        }else {
-            ErrorView.setText("Please Build Before Run");
-            Toast.makeText(this, "Error!", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            showMessage("Error please check your code\nHints: 1- check the notes before build\n2- click on Example code to show an Example of a valid code");
         }
-
     }
 
     private void highliteCurrntInstruction() {
@@ -149,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
         MipsCodeText.setText(instructionsHandler.MipsCode);
         ExcutionIsInProgress=false;
         BuildIsDone=false;
+        showMessage("Execution is finished");
 
     }
     public void showMemoryLayout(View v){
@@ -187,5 +225,10 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
+    }
+
+    public void showMessage(String Message) {
+        MessageView.setText(Message);
+        Toast.makeText(this, Message, Toast.LENGTH_SHORT).show();
     }
 }

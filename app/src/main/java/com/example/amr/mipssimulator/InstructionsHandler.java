@@ -17,16 +17,16 @@ import java.util.HashMap;
     private static final int I_FORMAT =20;
     private static final int J_FORMAT =30;
     private boolean InstructionNameISObtained=false;
-    private Register_Memory_CycleData_Handler registers;
+     Register_Memory_CycleData_Handler registerMemoryCycleDataHandler;
     ArrayList<HashMap<String,String>> DataAndInstMemory =new ArrayList<>();
      ArrayList<HashMap<String,Integer>> InstNamesPos =new ArrayList<>();
     private String ObtainedInst;
     private int LineCounter=0;
      int ObtainedRegisterAdrdress =0;
 
-     InstructionsHandler(Register_Memory_CycleData_Handler registers, MainActivity mainActivity) {
+     InstructionsHandler(Register_Memory_CycleData_Handler registerMemoryCycleDataHandler, MainActivity mainActivity) {
         this.mainActivity=mainActivity;
-        this.registers=registers;
+        this.registerMemoryCycleDataHandler = registerMemoryCycleDataHandler;
     }
 
     //momken necheck el asm be anna necheck fel line kolo men awel char le7d el /n function bta5od men awel 0 l7d /n
@@ -34,7 +34,7 @@ import java.util.HashMap;
     //we na2s n3ml ba2y el inst we handler to excute the inst one  by one
 
     //this obatines the inst from user code  #param c >. the starting Char pos to begin  with
-     void obtainInstFromCode(int c) {
+     boolean obtainInstFromCode(int c) {
         //freeThe memory
         DataAndInstMemory.clear();
          InstNamesPos.clear();
@@ -66,14 +66,15 @@ InstNamesPos.add(NamePosForBranch);
                 }
                 else {
                     sendErrorToUser(MipsCode.substring(i, MipsCode.indexOf(' ', i)));
+                    return false;
                 }
 
 LineCounter++;
 
             }
         }
-        TextView mesage= (TextView) mainActivity.findViewById(R.id.messageView);
-        mesage.setText("Done!\nYou can run now");
+
+         return true;
     }
 
 
@@ -171,7 +172,7 @@ LineCounter++;
 
 
 
-    //gets the current RInstruction registers to deal with
+    //gets the current RInstruction registerMemoryCycleDataHandler to deal with
 
     private boolean isAnImmediateValue(String obtainedCode) {
 
@@ -208,9 +209,9 @@ LineCounter++;
                 }
                 if (i >=14) break;
             } else {
-                if (MipsCode.equals(registers.RegistersCode[i])) {
+                if (MipsCode.equals(registerMemoryCycleDataHandler.RegistersCode[i])) {
                     CodeObtained = true;
-                    obtainedInstr.put("RegAddress", String.valueOf(i));
+                    obtainedInstr.put("RegAddress", String.valueOf(i+1));
                     break;
 
                 }

@@ -10,15 +10,16 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.HashMap;
 
  class Register_Memory_CycleData_Handler {
      public View CycleDataLy;
-     String[] RegistersCode =new String[]{"$0","$s0","$s1","$s2","$s3","$s4","$s5","$s6","$s7","$vo","$sv1","$a0","$a1","$a2","$a3",
+     String[] RegistersCode =new String[]{"$0","$s0","$s1","$s2","$s3","$s4","$s5","$s6","$s7","$v0","$sv1","$a0","$a1","$a2","$a3",
             "$t0","$t1","$t2","$t3","$t4","$t5","$t6","$t7","$t8","$t9","$sp","$ra"};
      String[] CycleDataProbertise =new String[]{"opcode","rs","rt","rd","shamt","funct","RegDest","branch","MemRead","MemWrite","MemToReg",
-             "Alu","RegWrite","Immediate","TargetAdress"};
+             "AluOp","AluSrc","RegWrite","Immediate"};
   LinearLayout RegisterName,RegisterValue,MemoryAddress,MemoryValue,DataName,DataValue;;
     View RegMainLy,MemoryMainLy;
     private MainActivity Main;
@@ -50,14 +51,23 @@ import java.util.HashMap;
 
 
     private void AddViewsToLy(String NameHeader,String ValueHeader,int size, LinearLayout NameLy, LinearLayout ValueLy) {
-        String Text ="";
-        for(int i=-1;i<size-1;i++){
-
+        String Text ="",Tag="";
+        for(int i=-1;i<size;i++){
             for(int p=0;p<2;p++){
                if(i!=-1) {
-                   if (NameLy.getTag().equals("Reg")) Text = RegistersCode[i];
-                   if (NameLy.getTag().equals("mem")) Text = String.valueOf(i * 4);
-                   if (NameLy.getTag().equals("data")) Text = CycleDataProbertise[i];
+                   if (NameLy.getTag().equals("Reg")) {
+                       if(i==0||i==27)Tag="NotEditable";
+                       else Tag="Editable";
+                      Text = RegistersCode[i];
+                   }
+                   if (NameLy.getTag().equals("mem")){
+                       Tag="Editable";
+                       Text = String.valueOf(i * 4);
+                   }
+                   if (NameLy.getTag().equals("data")){
+                       Tag="NotEditable";
+                       Text = CycleDataProbertise[i];
+                   }
                }
 
 
@@ -70,8 +80,9 @@ import java.util.HashMap;
                         Text=ValueHeader;
                         ValueLy.addView(CreateViewFormemoryAndRegister(Text,ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT,Color.BLACK,"NotEditable"));
                     }else {
-                        Text="0";
-                        ValueLy.addView(CreateViewFormemoryAndRegister(Text,ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, Color.BLACK,"Editable"));
+                        if(NameLy.getTag().equals("Reg")&&i==27)Text="-1";
+                        else Text="0";
+                        ValueLy.addView(CreateViewFormemoryAndRegister(Text,ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, Color.BLACK,Tag));
                     }
 
                 }
@@ -130,8 +141,10 @@ import java.util.HashMap;
             @Override
             public boolean onLongClick(final View view) {
 final EditText newValue=new EditText(Main);
-                newValue.setInputType(InputType.TYPE_CLASS_NUMBER);
+                newValue.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
                 if(view.getTag().equals("Editable")){
+                    if(Main.ExcutionIsInProgress)
+                        Toast.makeText(Main, "Cannot changing values while Execution is in progress", Toast.LENGTH_LONG).show();
                     final android.support.v7.app.AlertDialog.Builder ad = new android.support.v7.app.AlertDialog.Builder(Main);
                     ad.setTitle("Set Value")
                             .setNeutralButton("Done", new DialogInterface.OnClickListener() {
