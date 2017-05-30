@@ -10,25 +10,22 @@
     android:id="@+id/MainLy"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_alignParentLeft="true"
-    android:layout_alignParentStart="true"
-    android:layout_alignParentTop="true"
     android:layout_weight="0.25"
     android:background="@android:color/background_light"
     android:orientation="vertical">
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:src="@drawable/capture" />
 
     <TextView
         android:id="@+id/instViewer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="instViewer"
-        android:textColor="@color/colorPrimaryDark"
         android:textSize="22sp" />
-
-
-    <WebView
-        android:layout_width="match_parent"
-        android:layout_height="200dp" />
 
     <LinearLayout
             android:id="@+id/DataCycleLy"

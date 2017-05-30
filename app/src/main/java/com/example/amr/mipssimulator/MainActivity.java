@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     EditText MipsCodeText ;
-    InstructionExcutor instructionExcutor;
+    InstructionExecutor instructionExecutor;
     LayoutFragments  registerFragment, memoryFragment,cycleDataFragment;
     Register_Memory_CycleData_Handler registerMemoryCycleDataHandler;
     InstructionsHandler instructionsHandler;
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         instructionsHandler=new InstructionsHandler(registerMemoryCycleDataHandler,this);
         container=(FrameLayout)findViewById(R.id.container);
         initialiseLayoutFragments();
-        instructionExcutor=new InstructionExcutor(instructionsHandler);
+        instructionExecutor =new InstructionExecutor(instructionsHandler);
         TextView notes=(TextView)findViewById(R.id.notes);
         notes.setText("ImportantNotes\n*the code is case sensitive\n*every instruction should be written line by line without any spaces \n" +
                 "*the pointer of any instruction that used for jumping should be at a seperate line before its  instruction\n" +
@@ -153,8 +153,8 @@ public class MainActivity extends AppCompatActivity {
             ExcutionIsInProgress = ProgramCounter <= instructionsHandler.DataAndInstMemory.size() - 1;
             if (BuildIsDone) {
                 if (ExcutionIsInProgress) {
-                    highliteCurrntInstruction();
-                    instructionExcutor.Excute(instructionsHandler.DataAndInstMemory.get(ProgramCounter));
+                    highlightCurrentInstruction();
+                    instructionExecutor.Execute(instructionsHandler.DataAndInstMemory.get(ProgramCounter));
                     MessageView.setText("Execution is in progress\nPress the Run button to execute the next Instruction");
 
                 } else {
@@ -166,15 +166,17 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }catch (Exception e){
+            Stop(null);
             showMessage("Error please check your code\nHints: 1- check the notes before build\n2- click on Example code to show an Example of a valid code");
         }
     }
 
-    private void highliteCurrntInstruction() {
+    private void highlightCurrentInstruction() {
         SpannableString text = new SpannableString(instructionsHandler.MipsCode);
         pos2=MipsCodeText.getText().toString().indexOf("\n",pos1)+1;
         if(MipsCodeText.getText().toString().charAt(pos2-2)==':')pos2=MipsCodeText.getText().toString().indexOf("\n",pos2)+1;
         text.setSpan(new TextAppearanceSpan(this, R.style.style1), pos1, pos2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        instructionsHandler.registerMemoryCycleDataHandler.InstViewr.setText(text.subSequence(pos1,pos2).toString());
         MipsCodeText.setText(text, TextView.BufferType.SPANNABLE);
         pos1=pos2;
     }

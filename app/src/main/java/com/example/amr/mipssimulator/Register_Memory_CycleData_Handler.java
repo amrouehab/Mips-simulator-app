@@ -19,10 +19,12 @@ import java.util.HashMap;
      String[] RegistersCode =new String[]{"$0","$s0","$s1","$s2","$s3","$s4","$s5","$s6","$s7","$v0","$sv1","$a0","$a1","$a2","$a3",
             "$t0","$t1","$t2","$t3","$t4","$t5","$t6","$t7","$t8","$t9","$sp","$ra"};
      String[] CycleDataProbertise =new String[]{"opcode","rs","rt","rd","shamt","funct","RegDest","branch","MemRead","MemWrite","MemToReg",
-             "AluOp","AluSrc","RegWrite","Immediate"};
+             "AluOp","AluSrc","RegWrite","jump","Immediate"};
   LinearLayout RegisterName,RegisterValue,MemoryAddress,MemoryValue,DataName,DataValue;;
     View RegMainLy,MemoryMainLy;
+     TextView InstViewr ;
     private MainActivity Main;
+
 
      Register_Memory_CycleData_Handler(MainActivity main) {
         Main=main;
@@ -40,7 +42,8 @@ import java.util.HashMap;
          DataValue = (LinearLayout) CycleDataLy.findViewById(R.id.Value);
         AddViewsToLy("Address","Value",27,RegisterName,RegisterValue);
         AddViewsToLy("Address","Value",100,MemoryAddress,MemoryValue);
-         AddViewsToLy("Property","Value",15,DataName,DataValue);
+         AddViewsToLy("Property","Value",16,DataName,DataValue);
+         InstViewr=(TextView)CycleDataLy.findViewById(R.id.instViewer);
 
     }
 
