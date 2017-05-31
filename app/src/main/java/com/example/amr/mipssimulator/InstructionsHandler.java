@@ -211,7 +211,7 @@ LineCounter++;
         try {
             Integer.parseInt(obtainedCode + 1);
 //check is it an IFormat
-            return InstFormat == I_FORMAT;
+            return InstFormat == I_FORMAT||ObtainedInst.equals("sll");
 
 
         } catch (Exception e) {

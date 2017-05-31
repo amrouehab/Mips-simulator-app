@@ -15,11 +15,11 @@ import android.widget.Toast;
 import java.util.HashMap;
 
  class Register_Memory_CycleData_Handler {
-     public View CycleDataLy;
+      View CycleDataLy;
      String[] RegistersCode =new String[]{"$0","$s0","$s1","$s2","$s3","$s4","$s5","$s6","$s7","$v0","$sv1","$a0","$a1","$a2","$a3",
             "$t0","$t1","$t2","$t3","$t4","$t5","$t6","$t7","$t8","$t9","$sp","$ra"};
      String[] CycleDataProbertise =new String[]{"opcode","rs","rt","rd","shamt","funct","RegDest","branch","MemRead","MemWrite","MemToReg",
-             "AluOp","AluSrc","RegWrite","jump","Immediate"};
+             "AluOp","AluSrc","RegWrite","jump","Immediate","jumpReg"};
   LinearLayout RegisterName,RegisterValue,MemoryAddress,MemoryValue,DataName,DataValue;;
     View RegMainLy,MemoryMainLy;
      TextView InstViewr ;
@@ -28,9 +28,9 @@ import java.util.HashMap;
 
      Register_Memory_CycleData_Handler(MainActivity main) {
         Main=main;
-        RegMainLy = Main.getLayoutInflater().inflate(R.layout.reg_ly,null);//bya5od el scrollview
+        RegMainLy = Main.getLayoutInflater().inflate(R.layout.reg_ly,null);
         MemoryMainLy = Main.getLayoutInflater().inflate(R.layout.memory_ly,null);
-         CycleDataLy=Main.getLayoutInflater().inflate(R.layout.cycle_layout,null);//bya5od el scrollview
+         CycleDataLy=Main.getLayoutInflater().inflate(R.layout.cycle_layout,null);
          RegisterName = (LinearLayout) RegMainLy.findViewById(R.id.regName);
         RegisterName.setTag("Reg");
         RegisterValue = (LinearLayout) RegMainLy.findViewById(R.id.regValue);
@@ -42,7 +42,7 @@ import java.util.HashMap;
          DataValue = (LinearLayout) CycleDataLy.findViewById(R.id.Value);
         AddViewsToLy("Address","Value",27,RegisterName,RegisterValue);
         AddViewsToLy("Address","Value",100,MemoryAddress,MemoryValue);
-         AddViewsToLy("Property","Value",16,DataName,DataValue);
+         AddViewsToLy("Property","Value",17,DataName,DataValue);
          InstViewr=(TextView)CycleDataLy.findViewById(R.id.instViewer);
 
     }
@@ -145,25 +145,25 @@ import java.util.HashMap;
             public boolean onLongClick(final View view) {
 final EditText newValue=new EditText(Main);
                 newValue.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
-                if(view.getTag().equals("Editable")){
-                    if(Main.ExcutionIsInProgress)
+                if(view.getTag().equals("Editable")) {
+                    if (Main.ExcutionIsInProgress)
                         Toast.makeText(Main, "Cannot changing values while Execution is in progress", Toast.LENGTH_LONG).show();
-                    final android.support.v7.app.AlertDialog.Builder ad = new android.support.v7.app.AlertDialog.Builder(Main);
-                    ad.setTitle("Set Value")
-                            .setNeutralButton("Done", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    ((TextView)view).setText(newValue.getText().toString());
-                                    dialog.dismiss();
+                    else {
+                        final android.support.v7.app.AlertDialog.Builder ad = new android.support.v7.app.AlertDialog.Builder(Main);
+                        ad.setTitle("Set Value")
+                                .setNeutralButton("Done", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        ((TextView) view).setText(newValue.getText().toString());
+                                        dialog.dismiss();
 
 
-                                }
-                            })
-                            .setView(newValue)
-                            .show();
+                                    }
+                                })
+                                .setView(newValue)
+                                .show();
 
 
-
-
+                    }
                 }
                 return true;
             }

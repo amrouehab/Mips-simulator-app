@@ -47,9 +47,13 @@ public class MainActivity extends AppCompatActivity {
                 "*you could adjust the Register values from register Table the same as for MemoryValues\n" +
                 "* the PC is zero By Default\n* register $ra is initially set to -1 which is the address of the system caller\nwhich means that execution will be finished when ra is -1 when using Jal");
 
-
+setTheInitialValuesOfRaAndSpRegister();
     }
 
+    private void setTheInitialValuesOfRaAndSpRegister() {
+        ((TextView)registerMemoryCycleDataHandler.RegisterValue.getChildAt(27)).setText("-1");
+        ((TextView)registerMemoryCycleDataHandler.RegisterValue.getChildAt(26)).setText("396");
+    }
 
 
     private void initialiseLayoutFragments() {
@@ -116,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void Excode(View v){
         if(!ExcutionIsInProgress){
-            MessageView.setText("this is a fibonacci sequence code Example \n please set the required value of $t0 which is F0\n and $t1 which is F1\n and $a0 which is N");
+            MessageView.setText("this is a fibonacci sequence code Example \n please set the value of $a0 which is N");
             MipsCodeText.setText("fib:\n" +
                     "addi $t0,$0,0\n" +
                     "addi $t1,$0,1\n" +
@@ -189,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
         ExcutionIsInProgress=false;
         BuildIsDone=false;
         showMessage("Execution is finished");
+        setTheInitialValuesOfRaAndSpRegister();
 
     }
     public void showMemoryLayout(View v){

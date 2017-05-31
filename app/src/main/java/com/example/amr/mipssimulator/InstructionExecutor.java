@@ -81,8 +81,8 @@ class InstructionExecutor {
             executeJFormat(r2);
         }
         else instructionsHandler.mainActivity.ProgramCounter++;
-        String CycleDataValue[] = new String[]{"5", r0Address, r1Address, "no rd", "0", "0 ->noFunc", "0", "1", "0", "0",
-                "0", "5", "1", "1","0", r2};
+        String CycleDataValue[] = new String[]{"5", r0Address, r1Address, "no rd", "0", "0 ->noFunc", "X", "1", "0", "0",
+                "X", "5", "0", "0","0", r2,"0"};
         fillCycleDataViewsWithData(CycleDataValue);
 
 
@@ -101,8 +101,8 @@ class InstructionExecutor {
         ((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(27)).setText(String.valueOf((instructionsHandler.mainActivity.ProgramCounter+1)*4));
         StackMemoryForHighlightingTextFirstPos.add(instructionsHandler.mainActivity.pos1);
         executeJFormat(r0);
-        String CycleDataValue[] = new String[]{"2", "0 -> no rs", "0 -> no rt", "0 -> no rd", "0", "0 ->noFunc", "2", "X", "0"
-                ,"0","2","X", "1", "0","1", "0 no immediate"};
+        String CycleDataValue[] = new String[]{"3", "0 -> no rs", "0 -> no rt", "0 -> no rd", "0", "0 ->noFunc", "2", "X", "0"
+                ,"0","2","X", "X", "1","1", "0 no immediate","0"};
         fillCycleDataViewsWithData(CycleDataValue);
 
 
@@ -117,8 +117,8 @@ class InstructionExecutor {
 executeJFormat(r2);
         }
         else instructionsHandler.mainActivity.ProgramCounter++;
-        String CycleDataValue[] = new String[]{"4", r0Address, r1Address, "no rd", "0", "0 ->noFunc", "0", "1", "0", "0",
-                "0", "4", "1", "1","0", r2};
+        String CycleDataValue[] = new String[]{"4", r0Address, r1Address, "no rd", "0", "0 ->noFunc", "X", "1", "0", "0",
+                "X", "4", "0", "0","0", r2,"0"};
         fillCycleDataViewsWithData(CycleDataValue);
 
 
@@ -140,7 +140,7 @@ executeJFormat(r2);
         }
 
         String CycleDataValue[] = new String[]{"0", r0Address , "0", "0", "0","8","1","0","0","0",
-                "0","8","0","1","X","no imm"};
+                "0","8","0","1","X","no imm","1"};
         fillCycleDataViewsWithData(CycleDataValue);
 
     }
@@ -155,7 +155,7 @@ if(r1Value<r2Value)((TextView) instructionsHandler.registerMemoryCycleDataHandle
 else ((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(r0Address))).setText("0");//sets 0 to the destination address
 
         String CycleDataValue[] = new String[]{"0", "0" , r1Address, r0Address, "0","42","1","0","0","0",
-                "0","42","0","1","0","no imm"};
+                "0","4","0","1","0","no imm","0"};
         fillCycleDataViewsWithData(CycleDataValue);
         instructionsHandler.mainActivity.ProgramCounter++;
     }
@@ -166,8 +166,8 @@ else ((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValu
         checkIFitsNotRegZeroOrRegRa(r0Address);
         r1Value= Integer.parseInt(((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(r1Address))).getText().toString());
         ((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(r0Address))).setText(String.valueOf(r1Value<<ShiftAmount));
-        String CycleDataValue[] = new String[]{"0", "0" , r1Address, r0Address, shiftAmount,"0","1","0","0","0",
-                "0","0","0","1","0","no imm"};
+        String CycleDataValue[] = new String[]{"0", "0" , r1Address, "0", shiftAmount,"0","1","0","0","0",
+                "0","2","0","1","0","no imm","0"};
         fillCycleDataViewsWithData(CycleDataValue);
         instructionsHandler.mainActivity.ProgramCounter++;
     }
@@ -187,7 +187,7 @@ else ((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValu
     instructionsHandler.mainActivity.ProgramCounter =branchingToInstPos;
         instructionsHandler.mainActivity.pos1=startPos;
         String CycleDataValue[] = new String[]{"2", "0 -> no rs", "0 -> no rt", "0 -> no rd", "0", "0 ->noFunc", "X ->Don't care", "X", "0"
-                ,"0","X","X", "1", "0","1", "0 no immediate"};
+                ,"0","X","X", "X", "0","1", "0 no immediate","0"};
         fillCycleDataViewsWithData(CycleDataValue);
 
 
@@ -201,7 +201,7 @@ else ((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValu
         String r1Value=((TextView) instructionsHandler.registerMemoryCycleDataHandler.MemoryValue.getChildAt(address/4)).getText().toString();
         ((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(r0Address))).setText(r1Value);
         String CycleDataValue[] = new String[]{"35", r2Address, r0Address, "0 -> no rd", "0", "0 ->noFunc", "0", "0", "1"
-                ,"0","1","35", "1", "1","0", String.valueOf(r1)};
+                ,"0","1","2", "1", "1","0", String.valueOf(r1),"0"};
         fillCycleDataViewsWithData(CycleDataValue);
         instructionsHandler.mainActivity.ProgramCounter++;
     }
@@ -212,21 +212,22 @@ else ((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValu
         String r1Value=((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(r0Address))).getText().toString();
 
         ((TextView) instructionsHandler.registerMemoryCycleDataHandler.MemoryValue.getChildAt(address/4)).setText(r1Value);
-        String CycleDataValue[] = new String[]{"43", r2Address, r0Address, "0 -> no rd", "0", "0 ->noFunc", "0", "0", "0"
-                ,"1","XX ->Don't care","43", "1", "0","0", String.valueOf(r1)};
+        String CycleDataValue[] = new String[]{"43", r2Address, r0Address, "0 -> no rd", "0", "0 ->noFunc", "X", "0", "0"
+                ,"1","XX ->Don't care","2", "1", "0","0", String.valueOf(r1),"0"};
         fillCycleDataViewsWithData(CycleDataValue);
         instructionsHandler.mainActivity.ProgramCounter++;
 
     }
 
     private void executeNor(String r0Address, String r1Address, String r2Address) {
-        int r1Value,r2Value;
+        int r1Value,r2Value,res;
         checkIFitsNotRegZeroOrRegRa(r0Address);
         r1Value= Integer.parseInt(((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(r1Address))).getText().toString());
         r2Value= Integer.parseInt(((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(r2Address))).getText().toString());
-        ((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(r0Address))).setText(String.valueOf(r1Value|r2Value));
-        String CycleDataValue[]=new String[]{"0", String.valueOf(r1Value), String.valueOf(r2Value),String.valueOf(r1Value+r2Value),"0","0","1","0","0","0",
-                "0","1","1","0","0"};
+        res=~(r1Value|r2Value);
+        ((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(r0Address))).setText(String.valueOf(res));
+        String CycleDataValue[]=new String[]{"0", String.valueOf(r1Value), String.valueOf(r2Value),String.valueOf(r1Value+r2Value),"0","39","1","0","0","0",
+                "0","5","1","0","0","0"};
         fillCycleDataViewsWithData(CycleDataValue);
         instructionsHandler.mainActivity.ProgramCounter++;
 
@@ -237,8 +238,8 @@ else ((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValu
         checkIFitsNotRegZeroOrRegRa(r0Address);
         r1Value= Integer.parseInt(((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(r1Address))).getText().toString());
         ((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(r0Address))).setText(String.valueOf(r1Value|r2));
-        String CycleDataValue[] = new String[]{"8", r1Address, r0Address, "no rt", "0", "8", "0", "0", "0", "0",
-                "0", "32", "1", "1","0", String.valueOf(r2)};
+        String CycleDataValue[] = new String[]{"13", r1Address, r0Address, "no rd", "0", "8", "0", "0", "0", "0",
+                "0", "1", "1", "1","0", String.valueOf(r2),"0"};
         fillCycleDataViewsWithData(CycleDataValue);
         instructionsHandler.mainActivity.ProgramCounter++;
     }
@@ -249,8 +250,8 @@ else ((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValu
         r1Value= Integer.parseInt(((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(r1Address))).getText().toString());
         r2Value= Integer.parseInt(((TextView)instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(r2Address))).getText().toString());
         ((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(r0Address))).setText(String.valueOf(r1Value|r2Value));
-        String CycleDataValue[]=new String[]{"0", r2Address,r1Address,r0Address,"0","0","1","0","0","0",
-                "0","0","0","1","0","no imm"};
+        String CycleDataValue[]=new String[]{"0", r2Address,r1Address,r0Address,"0","35","1","0","0","0",
+                "0","1","0","1","0","no imm","0"};
         fillCycleDataViewsWithData(CycleDataValue);
         instructionsHandler.mainActivity.ProgramCounter++;
     }
@@ -260,8 +261,8 @@ else ((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValu
         checkIFitsNotRegZeroOrRegRa(r0Address);
         r1Value= Integer.parseInt(((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(r1Address))).getText().toString());
         ((TextView)instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(r0Address))).setText(String.valueOf(r1Value&r2));
-        String CycleDataValue[] = new String[]{"8", r1Address, r0Address, "no rt", "0", "8", "0", "0", "0", "0",
-                "0", "32", "1", "1", "0",String.valueOf(r2)};
+        String CycleDataValue[] = new String[]{"12", r1Address, r0Address, "no rd", "0", "0", "0", "0", "0", "0",
+                "0", "0", "1", "1", "0",String.valueOf(r2),"0"};
         fillCycleDataViewsWithData(CycleDataValue);
         instructionsHandler.mainActivity.ProgramCounter++;
     }
@@ -273,7 +274,7 @@ else ((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValu
         r2Value= Integer.parseInt(((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(r2Address))).getText().toString());
         ((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(r0Address))).setText(String.valueOf(r1Value&r2Value));
         String CycleDataValue[]=new String[]{"0", r2Address,r1Address,r0Address,"0","36","1","0","0","0",
-                "0","36","0","1","0","no imm"};
+                "0","0","0","1","0","no imm","0"};
         fillCycleDataViewsWithData(CycleDataValue);
         instructionsHandler.mainActivity.ProgramCounter++;
 
@@ -284,8 +285,8 @@ else ((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValu
         checkIFitsNotRegZeroOrRegRa(r0Address);
         r1Value = Integer.parseInt(((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(r1Address))).getText().toString());
         ((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(r0Address))).setText(String.valueOf(r1Value + r2));
-        String CycleDataValue[] = new String[]{"8", r1Address, r0Address, "no rd", "0", "8", "0", "0", "0", "0",
-                "0", "32", "1", "1", "0", String.valueOf(r2)};
+        String CycleDataValue[] = new String[]{"8", r1Address, r0Address, "no rd", "0", "0", "0", "0", "0", "0",
+                "0", "2", "1", "1", "0", String.valueOf(r2),"0"};
         fillCycleDataViewsWithData(CycleDataValue);
         instructionsHandler.mainActivity.ProgramCounter++;
     }
@@ -297,8 +298,8 @@ else ((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValu
         r1Value= Integer.parseInt(((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(R1Address))).getText().toString());
         r2Value= Integer.parseInt(((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(R2Address))).getText().toString());
         ((TextView) instructionsHandler.registerMemoryCycleDataHandler.RegisterValue.getChildAt(Integer.parseInt(R0Address))).setText(String.valueOf(r1Value+r2Value));
-        String CycleDataValue[]=new String[]{"0", R2Address,R1Address,R0Address,"0","8","1","0","0","0",
-                "0","8","0","1","0","no imm"};
+        String CycleDataValue[]=new String[]{"0", R2Address,R1Address,R0Address,"0","32","1","0","0","0",
+                "0","2","0","1","0","no imm","0"};
         fillCycleDataViewsWithData(CycleDataValue);
         instructionsHandler.mainActivity.ProgramCounter++;
     }
